@@ -433,54 +433,51 @@
 ];
 
             const tableBody = document.querySelector('#resources-table tbody');
-            const apiKey = "cf897b0182aba8e0a03631fb87448236";
+
 
             resources.forEach(resource => {
-                const row = document.createElement('tr');
-                
-                // Create website cell with thumbnail
-                const websiteCell = document.createElement('td');
-                websiteCell.className = 'clearfix';
-                
-                const img = document.createElement('img');
-                img.className = 'thumbnail';
-                img.src = 'https://via.placeholder.com/120x90?text=Loading...';
-                img.alt = 'Website thumbnail';
-                
-                const div = document.createElement('div');
-                div.className = 'website-info';
-                
-                const link = document.createElement('a');
-                link.href = resource.url;
-                link.target = '_blank';
-                link.className = 'website-name';
-                link.textContent = new URL(resource.url).hostname.replace('www.', '');
-                
-                div.appendChild(link);
-                websiteCell.appendChild(img);
-                websiteCell.appendChild(div);
-                
-                // Create description cell
-                const descCell = document.createElement('td');
-                descCell.className = 'description';
-                descCell.textContent = resource.description;
-                
-                row.appendChild(websiteCell);
-                row.appendChild(descCell);
-                tableBody.appendChild(row);
-                
-                // Fetch thumbnail using Link Preview API
-                fetch(`https://api.linkpreview.net/?key=${apiKey}&q=${encodeURIComponent(resource.url)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        img.src = data.image || 'https://via.placeholder.com/120x90?text=No+Thumbnail';
-                    })
-                    .catch(error => {
-                        console.error('Error fetching thumbnail for', resource.url, error);
-                        img.src = 'https://via.placeholder.com/120x90?text=No+Thumbnail';
-                    });
-            });
+    const row = document.createElement('tr');
+    
+    const websiteCell = document.createElement('td');
+    websiteCell.className = 'clearfix';
+    
+    const img = document.createElement('img');
+    img.className = 'thumbnail';
+    img.src = 'https://via.placeholder.com/120x90?text=Loading...';
+    img.alt = 'Website thumbnail';
+    
+    const div = document.createElement('div');
+    div.className = 'website-info';
+    
+    const link = document.createElement('a');
+    link.href = resource.url;
+    link.target = '_blank';
+    link.className = 'website-name';
+    link.textContent = new URL(resource.url).hostname.replace('www.', '');
+    
+    div.appendChild(link);
+    websiteCell.appendChild(img);
+    websiteCell.appendChild(div);
+    
+    const descCell = document.createElement('td');
+    descCell.className = 'description';
+    descCell.textContent = resource.description;
+    
+    row.appendChild(websiteCell);
+    row.appendChild(descCell);
+    tableBody.appendChild(row);
+    
+    // Fixed thumbnail fetching
+    fetch(`https://faviconget.com/api/v2/?url=${encodeURIComponent(resource.url)}`)
+        .then(response => response.json())
+        .then(data => {
+            img.src = data.icons[0]?.url || 'https://via.placeholder.com/120x90?text=No+Icon';
+        })
+        .catch(error => {
+            console.error('Error fetching favicon for', resource.url, error);
+            img.src = 'https://via.placeholder.com/120x90?text=No+Icon';
         });
+});
     </script>
 </body>
 </html>
